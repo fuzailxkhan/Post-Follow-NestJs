@@ -5,9 +5,10 @@ import { Follow } from './entities/follow.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FollowDto } from './dto/follow.dto';
 import { User } from 'src/users/entities/user.entity';
+import { Notification } from 'src/notification/entities/notification.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Follow,User])],
+  imports:[TypeOrmModule.forFeature([Follow,User,Notification])],
   providers: [FollowService],
   controllers: [FollowController]
 })

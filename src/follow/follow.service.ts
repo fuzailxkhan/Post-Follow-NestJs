@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Follow } from './entities/follow.entity';
 import { User } from 'src/users/entities/user.entity';
+import {Notification} from '../notification/entities/notification.entity'
 
 @Injectable()
 export class FollowService {
@@ -11,6 +12,8 @@ export class FollowService {
     private followRepository: Repository<Follow>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Notification)
+    private notificationRepository: Repository<Notification>
   ) {}
 
   async followUser(followerId: string, followedId: string): Promise<Follow> {
@@ -21,12 +24,20 @@ export class FollowService {
       throw new Error('User(s) not found');
     }
 
-    const follow = this.followRepository.create({
-      follower,
-      followed,
+    const follow = this.followRepository.create({ follower, followed });
+    await this.followRepository.save(follow);
+  
+    // 🚀 Create a notification for the followed user
+    const notification = this.notificationRepository.create({
+      user: followed, // Notify the user being followed
+      message: `${follower.firstName} started following you!`,
+      type: 'follow',
+      read: false
     });
-
-    return await this.followRepository.save(follow);
+  
+    await this.notificationRepository.save(notification);
+  
+    return follow;
   }
 
   async unfollowUser(followerId: string, followedId: string): Promise<void> {
