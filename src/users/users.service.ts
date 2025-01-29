@@ -23,4 +23,8 @@ export class UsersService {
         return this.getUserById(userId);
       }
 
+      async updateFirebaseToken(userId: string, firebaseToken: string): Promise<void> {
+        await this.userRepository.update(userId, { firebaseToken });
+      }
+
 }
