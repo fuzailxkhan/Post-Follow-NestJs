@@ -11,10 +11,20 @@ import { FollowModule } from './follow/follow.module';
 import { NotificationController } from './notification/notification.controller';
 import { NotificationModule } from './notification/notification.module';
 import { NotificationService } from './notification/notification.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
 
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig),
+  imports: [
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',  // or your redis host
+        port: 6379,         // default port
+      },
+    }),
+    TypeOrmModule.forRoot(typeOrmConfig),
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
      AuthModule,
       UsersModule,

@@ -6,7 +6,7 @@ import { UseGuards, Req } from '@nestjs/common';
 
 @Controller('notification')
 export class NotificationController {
-  constructor(private readonly notificationsService: NotificationService) {}
+  constructor(private readonly notificationService: NotificationService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -14,18 +14,24 @@ export class NotificationController {
     @Body() createNotificationDto: CreateNotificationDto,
     @Req() req,
   ) {
-    return this.notificationsService.createNotification(createNotificationDto, req.user);
+    return this.notificationService.createNotification(createNotificationDto, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   getUserNotifications(@Req() req) {
-    return this.notificationsService.getUserNotifications(req.user);
+    return this.notificationService.getUserNotifications(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/read')
   markAsRead(@Param('id') notificationId: number) {
-    return this.notificationsService.markAsRead(notificationId);
+    return this.notificationService.markAsRead(notificationId);
+  }
+
+  @Post('/test/:userId')
+  async testNotification(@Param('userId') userId: string) {
+    await this.notificationService.scheduleProfileCompletionNotification(userId);
+    return { message: 'Test notification scheduled!' };
   }
 }

@@ -5,6 +5,7 @@ import { Notification } from './entities/notification.entity';
 import { CreateNotificationDto } from '../notification/dto/notification.dto';
 import { User } from 'src/users/entities/user.entity';
 import { FirebaseService } from 'src/config/firebase.service';
+import { NotificationQueueService } from './queues/notification.queue';
 
 @Injectable()
 export class NotificationService {
@@ -13,7 +14,8 @@ export class NotificationService {
     private notificationRepository: Repository<Notification>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private firebaseService: FirebaseService
+    private firebaseService: FirebaseService,
+    private notificationQueueService : NotificationQueueService,
   ) {}
 
   async createNotification(createNotificationDto: CreateNotificationDto, user: User): Promise<Notification> {
@@ -42,6 +44,19 @@ export class NotificationService {
     if (user && user.firebaseToken) {
       await this.firebaseService.sendPushNotification(user.firebaseToken, title, body);
     }
+  }
+
+  async scheduleProfileCompletionNotification(userId: string) {
+    console.log("Schedule Profile Completion Notification => notification.service at userId =", userId)
+    const notificationDetails = {
+      title: 'Complete Your Profile!',
+      body: 'You have 24 hours to complete your profile.',
+    };
+
+    // 24 hours delay in milliseconds
+    const delay = 6000;
+
+    await this.notificationQueueService.addNotificationToQueue(userId, notificationDetails, delay);
   }
 
 }

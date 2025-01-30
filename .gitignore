@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+firebase-service-accountkey.json
+
+
 # Logs
 logs
 *.log
