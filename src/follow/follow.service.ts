@@ -5,6 +5,7 @@ import { Follow } from './entities/follow.entity';
 import { User } from 'src/users/entities/user.entity';
 import { NotificationService } from '../notification/notification.service';
 import { UserProfile } from 'src/users/entities/user-profile.entity';
+import { NotificationType } from 'src/notification/enums/notification-type.enums';
 
 @Injectable()
 export class FollowService {
@@ -38,9 +39,7 @@ export class FollowService {
     if (followerProfile) {
       // 🚀 Send a notification to the followed user
       await this.notificationService.createAndSendNotification(
-        followed.id,
-        'New Follower!',
-        `${followerProfile.firstName} started following you!`
+        followed.id,NotificationType.FOLLOW
       );
     }
 

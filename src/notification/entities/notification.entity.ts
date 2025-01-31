@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-
+import { NotificationType } from '../enums/notification-type.enums';
 
 @Entity()
 export class Notification {
@@ -13,15 +13,12 @@ export class Notification {
   @Column()
   message: string;
 
-  @Column()
-  type: string; // Example: 'follow', 'post', 'profile-reminder', etc.
+  @Column({ type: 'enum', enum: NotificationType })
+  type: NotificationType; // Now uses the enum
 
   @Column({ default: false })
-  read: boolean; // Mark if the user has seen the notification
+  read: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
-
-
-  
 }
