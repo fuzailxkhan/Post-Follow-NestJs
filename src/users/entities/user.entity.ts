@@ -1,11 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
-import {Post} from '../../posts/entities/post.entity'
-import { Notification } from '../../notification/entities/notification.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany } from 'typeorm';
+import { UserProfile } from './user-profile.entity';
+import { OTP } from '../../auth/entities/otp.entity';
+import { Notification } from 'src/notification/entities/notification.entity';
+import { Post } from 'src/posts/entities/post.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ unique: true })
   email: string;
@@ -13,27 +15,19 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
-  firstName: string;
+  @OneToOne(() => UserProfile, (profile) => profile.user, { cascade: true })
+  profile: UserProfile;
 
-  @Column()
-  lastName: string;
-
-  @Column()
-  country: string;
+  @OneToMany(() => OTP, (otp) => otp.user)
+  otps: OTP[];
 
   @Column({ nullable: true })
-  otp: string; // Temporary field for OTP-based login
+  firebaseToken: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
+  @OneToMany(() => Notification, (notification) => notification.user, { cascade: true })
+  notifications: Notification[];
 
   @OneToMany(() => Post, (post) => post.user, { cascade: true })
   posts: Post[];
 
-  @OneToMany(() => Notification, (notification) => notification.user)
-  notifications: Notification[];
-
-  @Column({ nullable: true })
-  firebaseToken: string;
 }

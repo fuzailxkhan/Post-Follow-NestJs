@@ -6,7 +6,7 @@ import { InjectQueue } from '@nestjs/bull';
 export class NotificationQueueService {
   constructor(@InjectQueue('notification') private notificationQueue: Queue) {}
 
-  async addNotificationToQueue(userId: string, notificationDetails: any, delay: number) {
+  async addNotificationToQueue(userId: number, notificationDetails: any, delay: number) {
     console.log("Add Notification To Queue => notificaiton.queue")
     await this.notificationQueue.add('send-notification', {
       userId,

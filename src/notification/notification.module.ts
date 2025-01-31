@@ -22,6 +22,6 @@ import { NotificationQueueService } from './queues/notification.queue';
 
   providers: [NotificationService,NotificationCleanupService,NotificationProcessor,NotificationQueueService],
   controllers:[NotificationController],
-  exports:[NotificationQueueService]
+  exports:[NotificationQueueService,NotificationService]
 })
 export class NotificationModule {}

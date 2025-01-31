@@ -31,7 +31,7 @@ export class NotificationController {
 
   @Post('/test/:userId')
   async testNotification(@Param('userId') userId: string) {
-    await this.notificationService.scheduleProfileCompletionNotification(userId);
+    await this.notificationService.scheduleProfileCompletionNotification(Number(userId));
     return { message: 'Test notification scheduled!' };
   }
 }
