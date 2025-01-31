@@ -9,15 +9,12 @@ import { LoginDto } from './dto/login.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserProfile } from '../users/entities/user-profile.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(UserProfile)
-    private profileRepository: Repository<UserProfile>,
     @InjectRepository(OTP)
     private otpRepository: Repository<OTP>,
     private jwtService: JwtService,
@@ -25,7 +22,7 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: SignupDto): Promise<string> {
-    const { email, password, firstName, lastName, country } = signupDto;
+    const { email, password } = signupDto;
 
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) throw new ConflictException('Email is already registered');
@@ -35,11 +32,8 @@ export class AuthService {
     const user = this.userRepository.create({ email, password: hashedPassword });
     await this.userRepository.save(user);
 
-    const profile = this.profileRepository.create({ user, firstName, lastName, country });
-    await this.profileRepository.save(profile);
-
     console.log("User Signed Up ==> ", user.email);
-    return 'User registered successfully';
+    return 'User registered successfully. Please complete your profile later.';
   }
 
   async login(loginDto: LoginDto): Promise<string> {

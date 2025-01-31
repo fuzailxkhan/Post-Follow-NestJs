@@ -1,19 +1,11 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength, Matches } from 'class-validator';
 
 export class SignupDto {
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
   @IsNotEmpty()
-  @MinLength(6)
+  @MinLength(6, { message: 'Password must be at least 6 characters long' })
   password: string;
-
-  @IsNotEmpty()
-  firstName: string;
-
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsNotEmpty()
-  country: string;
 }
